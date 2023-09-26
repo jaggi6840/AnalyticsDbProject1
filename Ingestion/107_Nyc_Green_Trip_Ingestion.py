@@ -25,10 +25,6 @@ file_date = dbutils.widgets.get("p_file_date")
 
 # COMMAND ----------
 
-# MAGIC %run "../set-up/parameters"
-
-# COMMAND ----------
-
 # MAGIC %md 
 # MAGIC ### Step 1 - Reading trip data green parquet File from ADLS 
 # MAGIC 1. Read File  
@@ -44,7 +40,6 @@ Green_Trip_DF = spark.read.format("parquet") \
                      .option("Header" , True) \
                      .load(f"{DB_RAW}/raw/trip_data_green_parquet/") \
                       .withColumn("File_Name" , input_file_name())
-#Green_Trip_DF.groupBy(col('File_Name')).agg(count(col('*')))
 display(Green_Trip_DF)
 
 # COMMAND ----------
@@ -138,3 +133,8 @@ Green_Trip_DF.write.format("parquet") \
 
 # MAGIC %sql 
 # MAGIC DESCRIBE EXTENDED newyork_taxi.green_trip_ext
+
+# COMMAND ----------
+
+# MAGIC %sql 
+# MAGIC REFRESH TABLE  newyork_taxi.green_trip_ext

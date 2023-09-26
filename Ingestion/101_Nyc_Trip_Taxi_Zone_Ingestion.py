@@ -68,7 +68,7 @@ Taxi_Zone_Df.write.format("parquet") \
 
 # COMMAND ----------
 
-# MAGIC %sql Create  Database NEWYORK_TAXI
+# %sql Create  Database NEWYORK_TAXI
 
 # COMMAND ----------
 
