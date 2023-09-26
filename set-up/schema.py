@@ -1,4 +1,8 @@
 # Databricks notebook source
+# MAGIC %run ../set-up/parameters
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC   |Table|Content|
 # MAGIC   |--|--|

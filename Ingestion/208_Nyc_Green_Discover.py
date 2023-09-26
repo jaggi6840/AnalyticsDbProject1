@@ -1,31 +1,15 @@
 # Databricks notebook source
-# MAGIC %md
-# MAGIC   |Table|Content|
-# MAGIC   |--|--|
-# MAGIC   |01|This NoteBook will be used to Paramterised File Date |
-# MAGIC   |02|Use magic run Command to evaluate Parameters |
-# MAGIC   |03|Read File with InferSchema |
-# MAGIC   |04|Read File with Schema in a file  |
-# MAGIC   |04|Recursive File lookup to find all the files   |
-# MAGIC   |04|Use File Path to append for vairous files for Reconciliation purposes   |
-# MAGIC   |04|Read File with Schema in a file  |
-
-# COMMAND ----------
-
 dbutils.widgets.text("p_file_date" , "")
 file_date = dbutils.widgets.get("p_file_date")
 
 # COMMAND ----------
 
-# MAGIC %run "../set-up/parameters"
+# MAGIC %md 
+# MAGIC ###### Set Up Schema and Paramaters File
 
 # COMMAND ----------
 
 # MAGIC %run "../set-up/schema"
-
-# COMMAND ----------
-
-# MAGIC %run "../set-up/parameters"
 
 # COMMAND ----------
 
@@ -36,14 +20,10 @@ file_date = dbutils.widgets.get("p_file_date")
 # COMMAND ----------
 
 from pyspark.sql.functions import input_file_name,count,col
-Green_Trip_DF = spark.read.format("parquet") \
+Green_Trip_DF1 = spark.read.format("parquet") \
                      .option("InferSchema" , True)\
                      .option("Header" , True) \
-                     .load(f"{DB_PROCESSED}/green_trip_ext/") \
-                      .withColumn("File_Name" , input_file_name())\
-                      .drop(col('File_Name'))
-#Green_Trip_DF.groupBy(col('File_Name')).agg(count(col('*')))
-display(Green_Trip_DF)
+                     .load(f"{DB_PROCESSED}/green_trip_ext/")
 
 # COMMAND ----------
 
@@ -57,6 +37,31 @@ display(Green_Trip_DF)
 #                           .filter((col('year')==2020) & (col('month')==1))
 # #Green_Trip_DF.groupBy(col('File_Name')).agg(count(col('*')))
 # display(Green_Trip_DF)
+
+# COMMAND ----------
+
+# MAGIC %md 
+# MAGIC ##### Step 1a - Doing Filter , Drop , Select, Duplicates 
+# MAGIC   |Table|Content|
+# MAGIC   |--|--|
+# MAGIC   |01|For Multiple drops you don't need COL FUNCTIONS|
+# MAGIC 1. For Multiple drops you don't need COL FUNCTIONS| 
+# MAGIC 1. DROP_DUPLICATES
+# MAGIC 1. Drop all fields 
+# MAGIC 1. Select 
+# MAGIC 1. where .isNull filter (string and integer are different)
+# MAGIC
+
+# COMMAND ----------
+
+Green_Trip_DF = Green_Trip_DF1.filter(col('lpep_dropoff_datetime') > col('lpep_pickup_datetime')) \
+                              .drop('lpep_dropoff_datetime','lpep_pickup_datetime','input_file_name') \
+                              .drop(*['store_and_fwd_flag']) \
+                              .select(col('VendorID'),col('RatecodeID'),col('PULocationID'),col('DOLocationID') \
+                              ,col('trip_distance'),col('fare_amount'),col('extra'),col('mta_tax'),col('tip_amount'),col('tolls_amount'),col('ehail_fee'),col('improvement_surcharge')\
+                              ,col('total_amount'),col('payment_type'),col('trip_type'),col('year'),col('month')).drop_duplicates() \
+                              .filter(col('ehail_fee').isNull()) \
+                              .na.fill(0) 
 
 # COMMAND ----------
 
@@ -94,8 +99,8 @@ spark.sql("Select count(*)  from Green_Trip_TEMP \
 
 # COMMAND ----------
 
-Green_Trip_Filter_DF = Green_Trip_DF.filter((col('year')==2021) & (col('month')==1))
-display(Green_Trip_Filter_DF)
+# Green_Trip_Filter_DF = Green_Trip_DF.filter((col('year')==2021) & (col('month')==1))
+# display(Green_Trip_Filter_DF)
 
 # COMMAND ----------
 
@@ -144,10 +149,6 @@ display(Green_Taxi_Zone_Join_Df)
 # COMMAND ----------
 
 from pyspark.sql.functions import desc 
-Green_Taxi_Zone_Payment_Df1= Green_Taxi_Zone_Payment_Df.groupBy(col('Borough'),col('value')) \
-                             .agg(count('value').alias('Total_Trips')).show()
-
-# COMMAND ----------
-
-# MAGIC %md
-# MAGIC ### Step 6 - NOT WORKING 
+Green_Taxi_Zone_Payment_Df1= Green_Taxi_Zone_Payment_Df.groupBy(col('Year'),col('Month'),col('Borough'),col('value')) \
+                             .agg(count('value').alias('Total_Trips')).orderBy(col('Borough'))
+display(Green_Taxi_Zone_Payment_Df1)
