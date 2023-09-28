@@ -24,6 +24,7 @@ Green_Trip_DF1 = spark.read.format("parquet") \
                      .option("InferSchema" , True)\
                      .option("Header" , True) \
                      .load(f"{DB_PROCESSED}/green_trip_ext/")
+display(Green_Trip_DF1)                     
 
 # COMMAND ----------
 
@@ -99,7 +100,7 @@ spark.sql("Select count(*)  from Green_Trip_TEMP \
 
 # COMMAND ----------
 
-# Green_Trip_Filter_DF = Green_Trip_DF.filter((col('year')==2021) & (col('month')==1))
+ Green_Trip_Filter_DF = Green_Trip_DF
 # display(Green_Trip_Filter_DF)
 
 # COMMAND ----------
@@ -138,8 +139,8 @@ Payment_Type_Df = spark.sql("SELECT * FROM newyork_taxi.payment_type_ext").filte
 Green_Taxi_Zone_Join_Df = Green_Trip_Filter_DF.alias('GT').join( Payment_Type_Df.alias('PT') , col('GT.payment_type')  == col('PT.payment_type')  ,'inner'   ).select(col('GT.*'),col('PT.value'))
 Green_Taxi_Zone_Join_Df.count()
 
-Green_Taxi_Zone_Payment_Df = Green_Taxi_Zone_Join_Df.alias('GT').join(Taxi_Zone_Df.alias('TZ') , col('GT.PULocationID') == col('TZ.LocationID') ).filter(col('lpep_dropoff_datetime') > col('lpep_pickup_datetime')).drop_duplicates()
-display(Green_Taxi_Zone_Join_Df)
+Green_Taxi_Zone_Payment_Df = Green_Taxi_Zone_Join_Df.alias('GT').join(Taxi_Zone_Df.alias('TZ') , col('GT.PULocationID') == col('TZ.LocationID') ).drop_duplicates()
+
 
 # COMMAND ----------
 
