@@ -5,7 +5,7 @@ DB_NAME1 = dbutils.widgets.get("DB_NAME")
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ###### STEP 1 Create DATABASE DELTA TABLE 
+# MAGIC ###### Step 1 Create DATABASE DELTA TABLE 
 
 # COMMAND ----------
 
@@ -29,7 +29,7 @@ DB_NAME1 = dbutils.widgets.get("DB_NAME")
 
 # COMMAND ----------
 
-# MAGIC %md STEP 1a Creating Delta Table with pyspark 
+# MAGIC %md Step 1a Creating Delta Table with pyspark 
 
 # COMMAND ----------
 

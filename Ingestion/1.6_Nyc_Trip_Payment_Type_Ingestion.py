@@ -1,4 +1,9 @@
 # Databricks notebook source
+# MAGIC %md 
+# MAGIC #*INGEST PAYMENT TYPE FILE*
+
+# COMMAND ----------
+
 dbutils.widgets.text("p_file_date" , "")
 file_date = dbutils.widgets.get("p_file_date")
 
@@ -8,12 +13,8 @@ file_date = dbutils.widgets.get("p_file_date")
 
 # COMMAND ----------
 
-# MAGIC %run "../set-up/parameters"
-
-# COMMAND ----------
-
 # MAGIC %md 
-# MAGIC ### Step 6 - Reading Payment Type Json  File from ADLS 
+# MAGIC **Step 6 - Reading Payment Type Json  File from ADLS** 
 # MAGIC 1. Read File  
 # MAGIC 1. Declare Schema  
 
@@ -26,7 +27,7 @@ Payment_Type_Df = spark.read.format("json") \
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 6 - Reading Payment Type Array Json  File from ADLS 
+# MAGIC **Step 6 - Reading Payment Type Array Json  File from ADLS**
 # MAGIC 1. Read File  
 # MAGIC 1. Declare Schema  
 # MAGIC 1. EXPLODE function to read file
@@ -51,13 +52,13 @@ Payment_Type_Array_Df1= Payment_Type_Array_Df.withColumn("topping_explode",explo
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 3 - Create Database
+# MAGIC **Step 3 - Create Database**
 # MAGIC #####Please look into 01_Nyc_Trip_Taxi_Zone_Ingestion  Notebook 
 
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 4 - Creating Temp and Global views
+# MAGIC **Step 4 - Creating Temp and Global views**
 
 # COMMAND ----------
 
@@ -67,7 +68,7 @@ Payment_Type_Array_Df1.createOrReplaceGlobalTempView("newyork_taxi.payment_type_
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 5 - Storing data as Hive Managed Table
+# MAGIC **Step 5 - Storing data as Hive Managed Table**
 
 # COMMAND ----------
 
@@ -79,13 +80,13 @@ Payment_Type_Array_Df1.write.format("parquet") \
 
 # COMMAND ----------
 
-# MAGIC %sql 
-# MAGIC DESCRIBE EXTENDED newyork_taxi.payment_type_int
+# %sql 
+# DESCRIBE EXTENDED newyork_taxi.payment_type_int
 
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 6 - Storing data as Hive EXTERNAL Table
+# MAGIC **Step 6 - Storing data as Hive EXTERNAL Table**
 
 # COMMAND ----------
 
@@ -98,5 +99,5 @@ Payment_Type_Array_Df1.write.format("parquet") \
 
 # COMMAND ----------
 
-# MAGIC %sql 
-# MAGIC DESCRIBE EXTENDED newyork_taxi.payment_type_ext
+# %sql 
+# DESCRIBE EXTENDED newyork_taxi.payment_type_ext

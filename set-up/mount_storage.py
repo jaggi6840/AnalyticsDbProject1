@@ -28,6 +28,15 @@ configs = {"fs.azure.account.auth.type": "OAuth",
 
 # COMMAND ----------
 
+ 
+ dbutils.fs.mount(
+   source = "abfss://streamwrite@covidreportingdatalake6.dfs.core.windows.net/",
+   mount_point = "/mnt/covidreportingdatalake6/streamwrite",
+   extra_configs = configs)
+ 
+
+# COMMAND ----------
+
 
  dbutils.fs.mount(
    source = "abfss://raw@covidreportingdatalake6.dfs.core.windows.net/",

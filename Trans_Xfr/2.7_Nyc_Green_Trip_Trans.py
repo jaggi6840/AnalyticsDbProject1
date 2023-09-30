@@ -30,7 +30,7 @@ file_date = dbutils.widgets.get("p_file_date")
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 1 - Reading trip data green parquet File from PROCESSED 
+# MAGIC **Step 1 - Reading trip data green parquet File from PROCESSED**
 # MAGIC
 
 # COMMAND ----------
@@ -47,7 +47,7 @@ display(Green_Trip_DF)
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 2 - Reading trip data in a Temp View (Old Way)
+# MAGIC **Step 2 - Reading trip data in a Temp View (Old Way)**
 
 # COMMAND ----------
 
@@ -56,7 +56,7 @@ Green_Trip_DF.createOrReplaceTempView('Green_Trip_TEMP')
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 3 - Reading trip data from Dataframe (New Way)
+# MAGIC **Step 3 - Reading trip data from Dataframe (New Way)**
 
 # COMMAND ----------
 
@@ -75,7 +75,7 @@ spark.sql("Select *  from Green_Trip_TEMP \
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 4 - Filter  Green trip  data 
+# MAGIC **Step 4 - Filter  Green trip  data**
 # MAGIC 1. Filter data for year 2020 and Month = 1
 
 # COMMAND ----------
@@ -85,7 +85,7 @@ Green_Trip_Filter_DF = Green_Trip_DF.filter((col('year')==2020) & (col('month')=
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 5 - Taxi Zone Data 
+# MAGIC **Step 5 - Taxi Zone Data**
 # MAGIC 1. Create dataframe from Previously created Notebook for Taxi Zone, We can use temp global, managed,external  
 # MAGIC
 
@@ -100,7 +100,7 @@ Green_Taxi_Zone_Join_Df = Green_Trip_Filter_DF.alias('GT').join(Taxi_Zone_Df.ali
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Step 6 -Find No of Trips for 2020 in January 
+# MAGIC **Step 6 -Find No of Trips for 2020 in January**
 
 # COMMAND ----------
 
@@ -110,7 +110,7 @@ Green_Taxi_Zone_Join_Df.groupBy(col('Borough')).agg(count('*').alias('No Of Trip
 # COMMAND ----------
 
 # MAGIC %md
-# MAGIC ### Step 7 -Find No of hours for each trip 
+# MAGIC **Step 7 -Find No of hours for each trip**
 
 # COMMAND ----------
 
@@ -125,9 +125,3 @@ Green_Trip_hr_DF = Green_Trip_Filter_DF.withColumn("seconds_between",(unix_times
 
 Green_Trip_hr_Count_DF = Green_Trip_hr_DF.groupby(col('from_hour'),col('to_hour')).agg(count(col('from_hour')).alias('Total_Trip')).orderBy(col('from_hour'))
 display(Green_Trip_hr_Count_DF)
-
-# COMMAND ----------
-
-() \
-#.withColumn("birth_year", year(col('lpep_dropoff_datetime'))).show(n= 1000)
-#

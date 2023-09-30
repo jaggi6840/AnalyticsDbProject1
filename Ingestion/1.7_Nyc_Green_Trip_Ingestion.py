@@ -1,4 +1,9 @@
 # Databricks notebook source
+# MAGIC %md 
+# MAGIC #*INGEST GREEN TRIP FILE*
+
+# COMMAND ----------
+
 # MAGIC %md
 # MAGIC   |Table|Content|
 # MAGIC   |--|--|
@@ -17,16 +22,12 @@ file_date = dbutils.widgets.get("p_file_date")
 
 # COMMAND ----------
 
-# MAGIC %run "../set-up/parameters"
-
-# COMMAND ----------
-
 # MAGIC %run "../set-up/schema"
 
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 1 - Reading trip data green parquet File from ADLS 
+# MAGIC **Step 1 - Reading trip data green parquet File from ADLS**
 # MAGIC 1. Read File  
 # MAGIC 1. Declare Schema  
 # MAGIC 1. Recursive File 
@@ -40,7 +41,6 @@ Green_Trip_DF = spark.read.format("parquet") \
                      .option("Header" , True) \
                      .load(f"{DB_RAW}/raw/trip_data_green_parquet/") \
                       .withColumn("File_Name" , input_file_name())
-display(Green_Trip_DF)
 
 # COMMAND ----------
 
@@ -56,7 +56,7 @@ display(Green_Trip_DF)
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 2 - Reading trip data in a Temp View (Old Way)
+# MAGIC **Step 2 - Reading trip data in a Temp View (Old Way)**
 
 # COMMAND ----------
 
@@ -65,7 +65,7 @@ Green_Trip_DF.createOrReplaceTempView('Green_Trip_TEMP')
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 3 - Reading trip data from Dataframe (New Way)
+# MAGIC **Step 3 - Reading trip data from Dataframe (New Way)**
 
 # COMMAND ----------
 
@@ -84,13 +84,13 @@ spark.sql("Select payment_type, count(*) from Green_Trip_TEMP \
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 3 - Create Database
+# MAGIC **Step 3 - Create Database**
 # MAGIC #####Please look into 01_Nyc_Trip_Taxi_Zone_Ingestion  Notebook 
 
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 4 - Creating Temp and Global views
+# MAGIC **Step 4 - Creating Temp and Global views**
 
 # COMMAND ----------
 
@@ -100,7 +100,7 @@ Green_Trip_DF.createOrReplaceGlobalTempView("newyork_taxi.green_trip_g")
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 5 - Storing data as Hive Managed Table
+# MAGIC **Step 5 - Storing data as Hive Managed Table**
 
 # COMMAND ----------
 
@@ -112,13 +112,13 @@ Green_Trip_DF.write.format("parquet") \
 
 # COMMAND ----------
 
-# MAGIC %sql 
-# MAGIC DESCRIBE EXTENDED newyork_taxi.green_trip_int
+# %sql 
+# DESCRIBE EXTENDED newyork_taxi.green_trip_int
 
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 6 - Storing data as Hive EXTERNAL Table
+# MAGIC **Step 6 - Storing data as Hive EXTERNAL Table**
 
 # COMMAND ----------
 
@@ -131,10 +131,10 @@ Green_Trip_DF.write.format("parquet") \
 
 # COMMAND ----------
 
-# MAGIC %sql 
-# MAGIC DESCRIBE EXTENDED newyork_taxi.green_trip_ext
+# %sql 
+# DESCRIBE EXTENDED newyork_taxi.green_trip_ext
 
 # COMMAND ----------
 
-# MAGIC %sql 
-# MAGIC REFRESH TABLE  newyork_taxi.green_trip_ext
+# %sql 
+# REFRESH TABLE  newyork_taxi.green_trip_ext

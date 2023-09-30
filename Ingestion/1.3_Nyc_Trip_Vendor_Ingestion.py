@@ -1,4 +1,9 @@
 # Databricks notebook source
+# MAGIC %md 
+# MAGIC #*INGEST VENDOR FILE*
+
+# COMMAND ----------
+
 dbutils.widgets.text("p_file_date" , "")
 file_date = dbutils.widgets.get("p_file_date")
 
@@ -8,12 +13,8 @@ file_date = dbutils.widgets.get("p_file_date")
 
 # COMMAND ----------
 
-# MAGIC %run "../set-up/parameters"
-
-# COMMAND ----------
-
 # MAGIC %md 
-# MAGIC ### Step 3 - Reading Vendor  File from ADLS 
+# MAGIC ###### Step 3 - Reading Vendor  File from ADLS 
 # MAGIC 1. Read File  
 # MAGIC 1. Declare Schema  
 # MAGIC 1. Header is true as the file has header
@@ -28,7 +29,7 @@ Vendor_Df = spark.read.format("csv") \
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 2 - Writing  Taxi Zone Parquet File 
+# MAGIC ###### Step 2 - Writing  Taxi Zone Parquet File 
 # MAGIC 1. Partition by Service Zone  
 
 # COMMAND ----------
@@ -41,13 +42,13 @@ Vendor_Df.write.format("parquet") \
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 3 - Create Database
+# MAGIC ###### Step 3 - Create Database
 # MAGIC #####Please look into 01_Nyc_Trip_Taxi_Zone_Ingestion  Notebook 
 
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 4 - Creating Temp and Global views
+# MAGIC ###### Step 4 - Creating Temp and Global views
 
 # COMMAND ----------
 
@@ -57,7 +58,7 @@ Vendor_Df.createOrReplaceGlobalTempView("newyork_taxi.vendor_g")
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 5 - Storing data as Hive Managed Table
+# MAGIC ###### Step 5 - Storing data as Hive Managed Table
 
 # COMMAND ----------
 
@@ -69,13 +70,13 @@ Vendor_Df.write.format("parquet") \
 
 # COMMAND ----------
 
-# MAGIC %sql 
-# MAGIC DESCRIBE EXTENDED newyork_taxi.vendor_int
+# %sql 
+# DESCRIBE EXTENDED newyork_taxi.vendor_int
 
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ### Step 6 - Storing data as Hive EXTERNAL Table
+# MAGIC ###### Step 6 - Storing data as Hive EXTERNAL Table
 
 # COMMAND ----------
 
@@ -88,5 +89,5 @@ Vendor_Df.write.format("parquet") \
 
 # COMMAND ----------
 
-# MAGIC %sql 
-# MAGIC DESCRIBE EXTENDED newyork_taxi.vendor_ext
+# %sql 
+# DESCRIBE EXTENDED newyork_taxi.vendor_ext

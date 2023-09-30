@@ -5,7 +5,7 @@ DB_NAME1 = dbutils.widgets.get("DB_NAME")
 # COMMAND ----------
 
 # MAGIC %md 
-# MAGIC ###### STEP 1 Create DATABASE DELTA TABLE 
+# MAGIC ###### Step 1 Create DATABASE DELTA TABLE 
 
 # COMMAND ----------
 
@@ -41,7 +41,7 @@ Tax_Zone_Delta1 = deltaInstance1.toDF()
 # COMMAND ----------
 
 # MAGIC %md  
-# MAGIC ###### STEP 3 Comaparing New and Delta tables to find READ INSERT UPDATES AND DELETES 
+# MAGIC ###### Step 3 Comaparing New and Delta tables to find READ INSERT UPDATES AND DELETES 
 # MAGIC 1. Inner Join to find all the matching records where active flag = Y
 
 # COMMAND ----------
@@ -60,7 +60,7 @@ Taxi_Zone_Updates_Df = Taxi_Zone_Df.alias('S1').join(Tax_Zone_Delta.alias('T1') 
 # COMMAND ----------
 
 # MAGIC %md  
-# MAGIC ###### STEP 3 a
+# MAGIC ###### Step 3 a
 # MAGIC 1. Filter real updates 
 # MAGIC 1. Add Merge Key 
 
@@ -72,7 +72,7 @@ Taxi_Zone_Changes_Df2= Taxi_Zone_Changes_Df1.withColumn("merge_key" , lit(''))
 # COMMAND ----------
 
 # MAGIC %md  
-# MAGIC #### STEP 4 Comapring New and Delta Using LEFT_ANTI JOIN
+# MAGIC ###### Step 4 Comapring New and Delta Using LEFT_ANTI JOIN
 # MAGIC 1. Find all the Inserts 
 # MAGIC 1. Merge key as Actual Key
 
@@ -85,7 +85,7 @@ Taxi_Zone_changes_final_Df1 = Taxi_Zone_Changes_Df1.withColumn("merge_key" , col
 # COMMAND ----------
 
 # MAGIC %md  
-# MAGIC ###### STEP 5 Adding Insert And Updates DataFrames
+# MAGIC ###### Step 5 Adding Insert And Updates DataFrames
 # MAGIC 1. Union of Updates, Inserts , and updates(with Merge key as Null)
 
 # COMMAND ----------
@@ -95,7 +95,7 @@ Taxi_Zone_Final_Df1 = Taxi_Zone_Final_Df.union(Taxi_Zone_changes_final_Df1).unio
 # COMMAND ----------
 
 # MAGIC %md  
-# MAGIC ###### STEP 6 Create Temp View for Insert Updates and Deletes
+# MAGIC ###### Step 6 Create Temp View for Insert Updates and Deletes
 
 # COMMAND ----------
 
@@ -104,7 +104,7 @@ Taxi_Zone_Final_Df1.createOrReplaceTempView("Taxi_Zone_Final_Df")
 # COMMAND ----------
 
 # MAGIC %md  
-# MAGIC ###### STEP 7 Use Merge statement to flag Historic record as Null Active as Y
+# MAGIC ###### Step 7 Use Merge statement to flag Historic record as Null Active as Y
 
 # COMMAND ----------
 
