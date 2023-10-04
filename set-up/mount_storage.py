@@ -7,94 +7,122 @@
 
 # COMMAND ----------
 
-# MAGIC %md
-# MAGIC ##### Set-up the configs
-# MAGIC ##### Please update the following 
-# MAGIC
-# MAGIC   |Table|Content|
-# MAGIC   |--|--|
-# MAGIC   |01|application-id|
-# MAGIC   |02|service-credential|
-# MAGIC   |03|directory-id|
-# MAGIC
+# client_id="dac1c3fa-2139-4ff1-b61e-bc2d6a087383"
+# tenant_id="fb21a52b-1494-4328-95b2-c74714343e12"
+# client_secret="FxV8Q~-2.X8yQf.8VSfbqn_UI4ScjIO3iF33ObZ7"
+
+# COMMAND ----------
+
+dbutils.secrets.help()
+
+# COMMAND ----------
+
+dbutils.secrets.listScopes()
+
+# COMMAND ----------
+
+dbutils.secrets.list(scope='Analytics-Cloud-Secret-Scope')
+
+# COMMAND ----------
+
+client_id = dbutils.secrets.get(scope='Analytics-Cloud-Secret-Scope' ,key='Cloud-Analytics-Client-Id-Dev')
+tenant_id = dbutils.secrets.get(scope='Analytics-Cloud-Secret-Scope' ,key='Cloud-Analytics-Tenant-Id-Dev')
+client_secret = dbutils.secrets.get(scope='Analytics-Cloud-Secret-Scope' ,key='Cloud-Analytics-Client-Secret-Dev')
+
+# COMMAND ----------
+
+#client_id="dac1c3fa-2139-4ff1-b61e-bc2d6a087383"
+#tenant_id="fb21a52b-1494-4328-95b2-c74714343e12"
+#client_secret="FxV8Q~-2.X8yQf.8VSfbqn_UI4ScjIO3iF33ObZ7"
+
+# COMMAND ----------
+
+# spark.conf.set("fs.azure.account.auth.type.analyticsdbhub.dfs.core.windows.net", "OAuth")
+# spark.conf.set("fs.azure.account.oauth.provider.type.analyticsdbhub.dfs.core.windows.net", "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider")
+# spark.conf.set("fs.azure.account.oauth2.client.id.analyticsdbhub.dfs.core.windows.net", client_id)
+# spark.conf.set("fs.azure.account.oauth2.client.secret.analyticsdbhub.dfs.core.windows.net", client_secret)
+# spark.conf.set("fs.azure.account.oauth2.client.endpoint.analyticsdbhub.dfs.core.windows.net", f"https://login.microsoftonline.com/{tenant_id}/oauth2/token")
 
 # COMMAND ----------
 
 configs = {"fs.azure.account.auth.type": "OAuth",
-           "fs.azure.account.oauth.provider.type": "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider",
-           "fs.azure.account.oauth2.client.id": "78219f8f-eaeb-4d31-8be2-895d2f98dd9b",
-           "fs.azure.account.oauth2.client.secret": "e3p8Q~UoEifnIyqwGAZ1_z-vCAN7vnEK917X_aw5",
-           "fs.azure.account.oauth2.client.endpoint": "https://login.microsoftonline.com/1a8a013c-05a4-4ae2-a231-c624645288c9/oauth2/token"}
+          "fs.azure.account.oauth.provider.type": "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider",
+          "fs.azure.account.oauth2.client.id": client_id,
+          "fs.azure.account.oauth2.client.secret": client_secret,
+          "fs.azure.account.oauth2.client.endpoint": f"https://login.microsoftonline.com/{tenant_id}/oauth2/token"}
 
 # COMMAND ----------
 
- 
- dbutils.fs.mount(
-   source = "abfss://streamwrite@covidreportingdatalake6.dfs.core.windows.net/",
-   mount_point = "/mnt/covidreportingdatalake6/streamwrite",
+dbutils.fs.ls("abfss://demo@analyticsdbhub.dfs.core.windows.net")
+
+# COMMAND ----------
+
+
+# dbutils.fs.mount(
+#    source = "abfss://raw@analyticsdbhub.dfs.core.windows.net",
+#    mount_point = "/mnt/analyticsdbhub /raw",
+#    extra_configs = configs)
+
+# COMMAND ----------
+
+# dbutils.fs.unmount('/mnt/analyticsdbhub/raw')
+# dbutils.fs.unmount('/mnt/analyticsdbhub/demo')
+# dbutils.fs.unmount('/mnt/analyticsdbhub/processed')
+# dbutils.fs.unmount('/mnt/analyticsdbhub/lookup')
+# dbutils.fs.unmount('/mnt/analyticsdbhub/presentation')
+# dbutils.fs.unmount('/mnt/analyticsdbhub/checkpoint')
+# dbutils.fs.unmount('/mnt/analyticsdbhub/delta')
+
+# COMMAND ----------
+
+
+dbutils.fs.mount(
+   source = "abfss://raw@analyticsdbhub.dfs.core.windows.net",
+   mount_point = "/mnt/analyticsdbhub/raw",
    extra_configs = configs)
+
+dbutils.fs.mount(
+   source = "abfss://demo@analyticsdbhub.dfs.core.windows.net",
+   mount_point = "/mnt/analyticsdbhub/demo",
+   extra_configs = configs)
+
  
-
-# COMMAND ----------
-
-
- dbutils.fs.mount(
-   source = "abfss://raw@covidreportingdatalake6.dfs.core.windows.net/",
-   mount_point = "/mnt/covidreportingdatalake6/raw",
+dbutils.fs.mount(
+   source = "abfss://processed@analyticsdbhub.dfs.core.windows.net/",
+   mount_point = "/mnt/analyticsdbhub/processed",
    extra_configs = configs)
  
 dbutils.fs.mount(
-   source = "abfss://processed@covidreportingdatalake6.dfs.core.windows.net/",
-   mount_point = "/mnt/covidreportingdatalake6/processed",
+   source = "abfss://lookup@analyticsdbhub.dfs.core.windows.net/",
+   mount_point = "/mnt/analyticsdbhub/lookup",
+   extra_configs = configs)
+
+dbutils.fs.mount(
+   source = "abfss://presentation@analyticsdbhub.dfs.core.windows.net/",
+   mount_point = "/mnt/analyticsdbhub/presentation",
    extra_configs = configs)
  
- dbutils.fs.mount(
-   source = "abfss://lookup@covidreportingdatalake6.dfs.core.windows.net/",
-   mount_point = "/mnt/covidreportingdatalake6/lookup",
-   extra_configs = configs)
- 
-  dbutils.fs.mount(
-   source = "abfss://error@covidreportingdatalake6.dfs.core.windows.net/",
-   mount_point = "/mnt/covidreportingdatalake6/error",
-   extra_configs = configs)
   
- dbutils.fs.mount(
-   source = "abfss://streamread@covidreportingdatalake6.dfs.core.windows.net/",
-   mount_point = "/mnt/covidreportingdatalake6/streamread",
-   extra_configs = configs)
- 
- dbutils.fs.mount(
-   source = "abfss://streamwrite@covidreportingdatalake6.dfs.core.windows.net/",
-   mount_point = "/mnt/covidreportingdatalake6/streamwrite",
-   extra_configs = configs)
- 
- dbutils.fs.mount(
-   source = "abfss://streamcheckpoint@covidreportingdatalake6.dfs.core.windows.net/",
-   mount_point = "/mnt/covidreportingdatalake6/streamcheckpoint",
-   extra_configs = configs)
-  dbutils.fs.mount(
-   source = "abfss://delta@covidreportingdatalake6.dfs.core.windows.net/",
-   mount_point = "/mnt/covidreportingdatalake6/delta",
-   extra_configs = configs)
-
-
-# COMMAND ----------
-
 dbutils.fs.mount(
-source = "abfss://delta@covidreportingdatalake6.dfs.core.windows.net/",
-    mount_point = "/mnt/covidreportingdatalake6/delta",
-    extra_configs = configs)
+   source = "abfss://checkpoint@analyticsdbhub.dfs.core.windows.net/",
+   mount_point = "/mnt/analyticsdbhub/checkpoint",
+   extra_configs = configs)
+ 
+dbutils.fs.mount(
+source = "abfss://delta@analyticsdbhub.dfs.core.windows.net/",
+    mount_point = "/mnt/analyticsdbhub/delta",
+    extra_configs = configs) 
 
 # COMMAND ----------
 
-DB_RAW='/mnt/covidreportingdatalake6/raw'
-DB_PROCESSED='/mnt/covidreportingdatalake6/processed'
-DB_LOOKUP='/mnt/covidreportingdatalake6/lookup'
-DB_ERROR='/mnt/covidreportingdatalake6/error'
-DB_STREAMWRITE='/mnt/covidreportingdatalake6/streamwrite'
-DB_STREAMREAD='/mnt/covidreportingdatalake6/streamread'
-DB_STREAMCHECKPOINT='/mnt/covidreportingdatalake6/streamcheckpoint'
-DB_DELTA='/mnt/covidreportingdatalake6/delt'
+DB_RAW='/mnt/analyticsdbhub/raw'
+DB_PROCESSED='/mnt/analyticsdbhub/processed'
+DB_LOOKUP='/mnt/analyticsdbhub/lookup'
+DB_ERROR='/mnt/analyticsdbhub/error'
+DB_STREAMWRITE='/mnt/analyticsdbhub/streamwrite'
+DB_STREAMREAD='/mnt/analyticsdbhub/streamread'
+DB_STREAMCHECKPOINT='/mnt/analyticsdbhub/streamcheckpoint'
+DB_DELTA='/mnt/analyticsdbhub/delt'
 
 
 print(f"DB_Raw is : {DB_RAW}" )
