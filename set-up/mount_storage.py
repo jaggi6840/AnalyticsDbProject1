@@ -153,3 +153,69 @@ print(f"DB_STREAMCHECKPOINT is : {DB_STREAMCHECKPOINT}" )
 # COMMAND ----------
 
 # print(f"{DB_ERROR}")
+
+# COMMAND ----------
+
+dbutils.fs.ls('/mnt/analyticsdbhub/raw')
+
+# COMMAND ----------
+
+dbutils.fs.cp('/mnt/analyticsdbhub/raw/countries.csv', '/mnt/analyticsdbhub/raw/countries_bkp.csv')
+
+# COMMAND ----------
+
+dbutils.fs.head('/mnt/analyticsdbhub/raw/countries.csv',25)
+
+# COMMAND ----------
+
+dbutils.fs.mkdirs('/mnt/analyticsdbhub/raw/jaggi')
+
+# COMMAND ----------
+
+# Mv is not working
+dbutils.fs.mv('/mnt/analyticsdbhub/raw/countries.csv' , '/mnt/analyticsdbhub/raw/jaggi')
+
+
+# COMMAND ----------
+
+#Without True files will not ber overwritten
+dbutils.fs.put("/mnt/analyticsdbhub/raw/hello_db.txt", "Hello1, Databricks!",True)
+
+# COMMAND ----------
+
+dbutils.fs.refreshMounts()
+
+
+# COMMAND ----------
+
+dbutils.fs.rm("/mnt/analyticsdbhub/raw/hello_db.txt")
+
+
+# COMMAND ----------
+
+#updateMount command (dbutils.fs.updateMount)
+dbutils.fs.updateMount("s3a://%s" % aws_bucket_name, "/mnt/%s" % mount_name)
+
+
+# COMMAND ----------
+
+#exit command (dbutils.notebook.exit)
+dbutils.notebook.exit("Exiting from My Other Notebook")
+
+
+# COMMAND ----------
+
+#get command (dbutils.secrets.get)
+
+dbutils.secrets.get(scope="my-scope", key="my-key")
+
+
+# COMMAND ----------
+
+dbutils.secrets.listScopes()
+
+
+# COMMAND ----------
+
+dbutils.widgets.remove('fruits_combobox')
+
