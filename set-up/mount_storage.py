@@ -115,6 +115,27 @@ source = "abfss://delta@analyticsdbhub.dfs.core.windows.net/",
 
 # COMMAND ----------
 
+dbutils.fs.mount(
+source = "abfss://streamread@analyticsdbhub.dfs.core.windows.net/",
+    mount_point = "/mnt/analyticsdbhub/streamread",
+    extra_configs = configs) 
+
+# COMMAND ----------
+
+dbutils.fs.mount(
+source = "abfss://streamcheckpoint@analyticsdbhub.dfs.core.windows.net/",
+    mount_point = "/mnt/analyticsdbhub/streamcheckpoint",
+    extra_configs = configs) 
+
+# COMMAND ----------
+
+dbutils.fs.mount(
+source = "abfss://streamwrite@analyticsdbhub.dfs.core.windows.net/",
+    mount_point = "/mnt/analyticsdbhub/streamwrite",
+    extra_configs = configs) 
+
+# COMMAND ----------
+
 DB_RAW='/mnt/analyticsdbhub/raw'
 DB_PROCESSED='/mnt/analyticsdbhub/processed'
 DB_LOOKUP='/mnt/analyticsdbhub/lookup'
@@ -219,3 +240,7 @@ dbutils.secrets.listScopes()
 
 dbutils.widgets.remove('fruits_combobox')
 
+
+# COMMAND ----------
+
+dbutils.fs.mounts()
