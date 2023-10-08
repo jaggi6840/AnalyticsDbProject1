@@ -34,6 +34,11 @@ country_schema = StructType([
 
 # COMMAND ----------
 
+# MAGIC %md 
+# MAGIC **READ COUNTRIES CSV FILE FROM ADLS**
+
+# COMMAND ----------
+
 fulldf = spark.read.format("csv")\
                 .schema(country_schema)\
                  .option("header",True)\
@@ -50,37 +55,29 @@ display(fulldf)
 
 # COMMAND ----------
 
-
-
-# COMMAND ----------
-
-fulldf.write.format("delta")\
+fulldf.write.format("parquet")\
          .mode("Overwrite")\
          .save(f"{DB_PROCESSED}/countries/full")
-df= fulldf.limit(10)
-df.write.format("delta")\
-         .mode("Overwrite")\
-         .save(f"{DB_PROCESSED}/countries/small")
+# df= fulldf.limit(10)
+# df.write.format("parquet")\
+#          .mode("Overwrite")\
+#          .save(f"{DB_PROCESSED}/countries/small")
 
 
 # COMMAND ----------
 
-# MAGIC %sql show databases
-
-# COMMAND ----------
-
-# MAGIC %sql create database delta
-
-# COMMAND ----------
-
-# MAGIC %sql USE delta
+dbutils.fs.ls('/mnt/analyticsdbhub/processed/')
 
 # COMMAND ----------
 
 # MAGIC %sql 
-# MAGIC --create table delta.full using delta location '/mnt/analyticsdbhub/processed/countries/full'
-# MAGIC create table delta.small using delta location '/mnt/analyticsdbhub/processed/countries/small'
+# MAGIC create  STREAM.full using delta location '/mnt/analyticsdbhub/processed/countries/full'
+# MAGIC --create table STREAM.small using delta location '/mnt/analyticsdbhub/processed/countries/small'
 
 # COMMAND ----------
 
+# MAGIC %sql SELECT COUNT(*) FROM STREAM.full
 
+# COMMAND ----------
+
+# MAGIC %sql SELECT count(*) FROM STREAM.small

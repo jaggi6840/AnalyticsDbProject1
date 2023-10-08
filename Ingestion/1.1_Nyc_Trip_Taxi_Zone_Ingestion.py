@@ -4,8 +4,8 @@
 
 # COMMAND ----------
 
-dbutils.widgets.text("p_file_date" , "")
-file_date = dbutils.widgets.get("p_file_date")
+dbutils.widgets.text("table_name" , "")
+tbl_name = dbutils.widgets.get("table_name")
 
 # COMMAND ----------
 

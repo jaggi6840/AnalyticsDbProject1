@@ -98,11 +98,18 @@ display(df)
 # COMMAND ----------
 
 DB_STREAMWRITE="/mnt/analyticsdbhub/streamwrite"
-streamQuery = (df.writeStream.format("delta")\
+df3= df.writeStream.format("parquet")\
                .option("checkpointLocation" ,f"{DB_STREAMCHECKPOINT}" ) \
-               .option("path" , "/mnt/analyticsdbhub/streamwrite")\
-                   .trigger(once=True)
-                   .start())
+               .option("path" , "/mnt/analyticsdbhub/streamwrite/countries")\
+                   .trigger(once=True).start()
+
+# COMMAND ----------
+
+df =  spark.readStream.format("csv") \
+           .schema(country_schema) \
+           .option("header",True) \
+           .load("f{DB_PROCESSED}/countries/small")
+display(df)
 
 # COMMAND ----------
 
