@@ -26,7 +26,7 @@ Schema = StructType([
 df = spark.readStream.format("csv") \
            .schema(Schema) \
            .option("header",True) \
-           .load("/mnt/covidreportingdatalake6/streamread")
+           .load("/mnt/analyticsdbhub/streamread")
 display(df)
 
 # COMMAND ----------
@@ -38,10 +38,10 @@ display(df)
 # COMMAND ----------
 
 df.writeStream.format("parquet")\
-               .option("checkpointLocation" ,f"{DB_STREAMCHECKPOINT}" ) \
+               .option("checkpointLocation" ,"/mnt/analyticsdbhub/streamread" ) \
                 .outputMode("append") \
                 .trigger(processingTime="1 minute") \
-               .option("path" , "/mnt/covidreportingdatalake6/streamwrite").start()
+               .option("path" , "/mnt/analyticsdbhub/streamwrite").start()
 
 # COMMAND ----------
 

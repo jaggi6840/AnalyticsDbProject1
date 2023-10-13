@@ -18,10 +18,6 @@ df = spark.read.format("parquet") \
 
 # COMMAND ----------
 
-# MAGIC %sql SELECT * FROM jaggiqqqqq
-
-# COMMAND ----------
-
 DB_RAW='/mnt/analyticsdbhub/raw'
 DB_PROCESSED='/mnt/analyticsdbhub/processed'
 DB_LOOKUP='/mnt/analyticsdbhub/lookup'
