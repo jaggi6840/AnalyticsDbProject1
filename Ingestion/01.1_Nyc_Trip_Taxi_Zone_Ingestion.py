@@ -62,7 +62,7 @@ Taxi_Zone_Df.write.format("parquet") \
 
 # COMMAND ----------
 
-# %sql Create  Database NEWYORK_TAXI
+#%sql Create  Database NEWYORK_TAXI
 
 # COMMAND ----------
 
@@ -89,8 +89,8 @@ Taxi_Zone_Df.write.format("parquet") \
 
 # COMMAND ----------
 
-# %sql 
-# SELECT CURRENT_DATABASE()
+#  %sql 
+#  SELECT CURRENT_DATABASE()
 
 # COMMAND ----------
 
@@ -99,8 +99,8 @@ Taxi_Zone_Df.write.format("parquet") \
 
 # COMMAND ----------
 
-Taxi_Zone_Df.createOrReplaceTempView("newyork_taxi.taxi_zone")
-Taxi_Zone_Df.createOrReplaceGlobalTempView("hive_metastore.newyork_taxi.autoloader1.taxi_zone_g")
+Taxi_Zone_Df.createOrReplaceTempView(f"{tbl_name}")
+Taxi_Zone_Df.createOrReplaceGlobalTempView(f"{tbl_name}_g")
 
 # COMMAND ----------
 
@@ -110,10 +110,9 @@ Taxi_Zone_Df.createOrReplaceGlobalTempView("hive_metastore.newyork_taxi.autoload
 # COMMAND ----------
 
 Taxi_Zone_Df.write.format("parquet") \
-                  .partitionBy("Service_Zone") \
                   .mode("Overwrite") \
                   .option("comments","This is a internal Table ") \
-                  .saveAsTable("newyork_taxi.taxi_zone_int")
+                  .saveAsTable(f"newyork_taxi.{tbl_name}_int")
 
 # COMMAND ----------
 
@@ -128,13 +127,16 @@ Taxi_Zone_Df.write.format("parquet") \
 # COMMAND ----------
 
 Taxi_Zone_Df.write.format("parquet") \
-                  .partitionBy("Service_Zone") \
                   .mode("Overwrite") \
                   .option("comments","This is a EXTERNAL Table ") \
-                  .option("path", f"{DB_PROCESSED}/taxi_zone_ext" ) \
-                  .saveAsTable("newyork_taxi.taxi_zone_ext")
+                  .option("path", f"{DB_PROCESSED}/{tbl_name}_ext" ) \
+                  .saveAsTable(f"newyork_taxi.{tbl_name}_ext")
 
 # COMMAND ----------
 
 # %sql 
 # DESCRIBE EXTENDED newyork_taxi.taxi_zone_ext
+
+# COMMAND ----------
+
+dbutils.notebook.exit("Success")
